@@ -3,6 +3,8 @@ from pydexcom import Dexcom
 from decouple import config
 import threading
 import time
+import os
+from sys import argv
 
 
 def update_blood_sugar(dexcom: Dexcom, blood_sugar: Label) -> None:
@@ -48,7 +50,15 @@ def main() -> None:
     window = Tk()
     window.title("Dexcom")
     window.geometry("225x225")
+    abspath = os.path.abspath(argv[0])
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+    
+    # Uncomment this if converting this to exe
+    # window.iconphoto(True, PhotoImage(file=r"..\imgs\icon.png"))
+    
     window.iconphoto(True, PhotoImage(file=r"imgs\icon.png"))
+    
     window.configure(background='#dcdddd')
 
     curr_reading = dexcom.get_current_glucose_reading()
