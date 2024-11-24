@@ -18,6 +18,7 @@ def update_blood_sugar(dexcom: Dexcom, blood_sugar: Label) -> None:
         None
     """
     
+    # Updates Blood Sugar Every Minute
     while True:
         
         curr_reading = dexcom.get_current_glucose_reading()
@@ -48,15 +49,17 @@ def main() -> None:
     window.title("Dexcom")
     window.geometry("225x225")
     window.iconphoto(True, PhotoImage(file=r"C:\Users\spark\Python\DesktopDexcom\imgs\icon.png"))
+    window.configure(background='#dcdddd')
 
     curr_reading = dexcom.get_current_glucose_reading()
     
     if curr_reading is None:
-        blood_sugar = Label(window, text="Error: Trying Again in 1 Minute...", font=('Segoe UI Semibold',40))
+        blood_sugar = Label(window, text="Error: Trying Again in 1 Minute...", bg='#dcdddd', fg='#3d3e3d', font=('SF Pro Text', 40, 'bold'))
         
     else:
-        blood_sugar = Label(window, text=str(curr_reading.mmol_l) + curr_reading.trend_arrow, font=('Segoe UI Semibold',40))
-        blood_sugar.place(relx = 0.5, rely = 0.5, anchor = CENTER)
+        blood_sugar = Label(window, text=str(curr_reading.mmol_l) + curr_reading.trend_arrow, bg='#dcdddd',fg='#3d3e3d', font=('SF Pro Text', 40, 'bold'))
+    
+    blood_sugar.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
     # Setup Thread for Blood Sugar Updates
     thread = threading.Thread(target=update_blood_sugar, args=(dexcom, blood_sugar), daemon=True)
