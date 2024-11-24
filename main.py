@@ -17,10 +17,18 @@ def update_blood_sugar(dexcom: Dexcom, blood_sugar: Label) -> None:
     Returns:
         None
     """
+    
     while True:
-        blood_sugar.after(0, blood_sugar.config, {"text": str(dexcom.get_current_glucose_reading().mmol_l)
-                        + dexcom.get_current_glucose_reading().trend_arrow})
-        time.sleep(60)
+        
+        curr_reading = dexcom.get_current_glucose_reading()
+        
+        if curr_reading is None:
+            blood_sugar.after(0, blood_sugar.config, {"text": "Error: Trying Again in 1 Minute..."})
+            time.sleep(60)
+        
+        else:
+            blood_sugar.after(0, blood_sugar.config, {"text": str(curr_reading.mmol_l) + curr_reading.trend_arrow})
+            time.sleep(60)
 
 
 def main() -> None:
@@ -33,19 +41,22 @@ def main() -> None:
     """
     
     # Initialize pydexcom object using information in .env (See example.env)
-    dexcom = Dexcom(username=config("EMAIL"), password=config("PASS"), region="ous")
+    dexcom = Dexcom(username=config("EMAIL"), password=config("PASS"), region=config("REGION"))
     
     # Setup Tkinter
     window = Tk()
     window.title("Dexcom")
-    window.geometry("175x175")
+    window.geometry("225x225")
     window.iconphoto(True, PhotoImage(file=r"C:\Users\spark\Python\DesktopDexcom\imgs\icon.png"))
 
-    blood_sugar = Label(window
-                        ,text=str(dexcom.get_current_glucose_reading().mmol_l) 
-                        + dexcom.get_current_glucose_reading().trend_arrow
-                        ,font=('Segoe UI Semibold',40))
-    blood_sugar.place(relx = 0.5, rely = 0.5, anchor = CENTER)
+    curr_reading = dexcom.get_current_glucose_reading()
+    
+    if curr_reading is None:
+        blood_sugar = Label(window, text="Error: Trying Again in 1 Minute...", font=('Segoe UI Semibold',40))
+        
+    else:
+        blood_sugar = Label(window, text=str(curr_reading.mmol_l) + curr_reading.trend_arrow, font=('Segoe UI Semibold',40))
+        blood_sugar.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
     # Setup Thread for Blood Sugar Updates
     thread = threading.Thread(target=update_blood_sugar, args=(dexcom, blood_sugar), daemon=True)
