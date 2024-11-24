@@ -48,7 +48,7 @@ def main() -> None:
     window = Tk()
     window.title("Dexcom")
     window.geometry("225x225")
-    window.iconphoto(True, PhotoImage(file=r"C:\Users\spark\Python\DesktopDexcom\imgs\icon.png"))
+    window.iconphoto(True, PhotoImage(file=r"imgs\icon.png"))
     window.configure(background='#dcdddd')
 
     curr_reading = dexcom.get_current_glucose_reading()
