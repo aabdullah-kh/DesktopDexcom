@@ -1,0 +1,1 @@
+pyinstaller --onefile --windowed --icon=imgs/icon.ico --add-data "imgs/icon.png;images" main.py
