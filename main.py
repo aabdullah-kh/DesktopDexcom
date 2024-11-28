@@ -10,7 +10,7 @@ from sys import argv
 def update_blood_sugar(dexcom: Dexcom, blood_sugar: Label) -> None:
     """_summary_
     
-    Updates Blood Sugar Label Every 5 seconds
+    Updates Blood Sugar Label Every 6 seconds
 
     Args:
         dexcom (Dexcom): pydexcom object for API calls
@@ -20,7 +20,7 @@ def update_blood_sugar(dexcom: Dexcom, blood_sugar: Label) -> None:
         None
     """
     
-    # Retrieves blood sugar every 5 seconds using pydexcom API
+    # Retrieves blood sugar every 6 seconds using pydexcom API
     while True:
         
         curr_reading = dexcom.get_current_glucose_reading()
@@ -28,11 +28,11 @@ def update_blood_sugar(dexcom: Dexcom, blood_sugar: Label) -> None:
         if curr_reading is None:
             # We should NOT get here
             blood_sugar.after(0, blood_sugar.config, {"text": "Error!"})
-            time.sleep(5)
+            time.sleep(6)
         
         else:
             blood_sugar.after(0, blood_sugar.config, {"text": str(curr_reading.mmol_l) + curr_reading.trend_arrow})
-            time.sleep(5)
+            time.sleep(6)
 
 
 def main() -> None:
@@ -61,17 +61,19 @@ def main() -> None:
     window.title("Dexcom")
     window.geometry("225x225")
     window.configure(background='#dcdddd')
+    
+    # set current directory to main directory
     abspath = os.path.abspath(argv[0])
     dname = os.path.dirname(abspath)
     os.chdir(dname)
     
-    # Uncomment this if converting .py to .exe using 'exe-compile-script.sh'
-    # You WILL NEED 'Git Bash for Windows' to run it
-    # The .exe NEEDS to stay in the created 'dist' directory, just make a shortcut to place it elsewhere
+    # Uncomment this if converting .py to executable using 'compile-script.sh'
+    # If you are on Windows, you WILL NEED 'Git Bash for Windows' to run it
+    # The executable NEEDS to stay in the created 'dist' directory, just make a shortcut to place it elsewhere
     
     # window.iconphoto(True, PhotoImage(file=r"..\imgs\icon.png"))
     
-    # Comment this out if converting .py to .exe using 'exe-compile-script.sh'
+    # Comment this out if converting .py to executable using 'compile-script.sh'
     window.iconphoto(True, PhotoImage(file=r"imgs\icon.png"))
 
     curr_reading = dexcom.get_current_glucose_reading()
